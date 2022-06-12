@@ -15,9 +15,10 @@ const containerStyle = {
 class DiceHome extends Component {
 
     render() {
+        const { playGame, typeChoice, choice, matchSet, winSet, resetGame } = this.props;
         return (
             <div style={containerStyle}>
-                <h1>GAME ĐỔ XÚC SẮC</h1>
+                <h1>GAME ĐỔ XÚC SẮC </h1>
                 <div
                     style={{
                         width: '50%',
@@ -26,41 +27,47 @@ class DiceHome extends Component {
                         alignItems: 'center',
                     }}
                 >
-                    <button type="button" style={{ height: 100, width: 100, border: "3px solid green", }} className="btn btn-primary fs-3">TÀI</button>
+                    <button type="button" style={{ height: 100, width: 100, border: "3px solid green", }}
+                        className="btn btn-primary fs-3"
+                        onClick={() => typeChoice("TÀI")}>TÀI</button>
                     <DiceList />
-                    <button type="button" style={{ height: 100, width: 100, border: "3px solid green", }} className="btn btn-primary fs-3">Xỉu</button>
+                    <button type="button" style={{ height: 100, width: 100, border: "3px solid green", }}
+                        className="btn btn-primary fs-3"
+                        onClick={() => typeChoice("XỈU")}>XỈU</button>
                 </div>
-                <h2>Bạn chọn: </h2>
-                <h2>Số bàn thắng: </h2>
-                <h2>Tổng số bàn chơi: </h2>
-                <button type='button' className='btn btn-success'>Play</button>
-                {/* <ul
-                    style={{
-                        padding: 0,
-                        listStyle: 'none',
-                        fontSize: '1.6rem',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: '14px',
-                    }}
-                >
-                    <li>Your choice: <span>{userChoice ? 'Odd' : 'Even'}</span></li>
-                    <li>🔥 Matches Won: <span>{won}</span></li>
-                    <li>🔥 Total matches: <span>{match}</span></li>
-                </ul>
-                <div>
-                    {!isFinished && <Button variant='contained' color='success' onClick={play}>
-                        <Typography variant='h6'>PLAY GAME</Typography>
-                    </Button>}
-                    {isFinished && <Button variant='contained' color='primary' onClick={clearDice}>
-                        <Typography variant='h6'>NEXT</Typography>
-                    </Button>}
-                </div> */}
+                <h2>Bạn chọn: {choice}</h2>
+                <h2>Số bàn thắng: {winSet}</h2>
+                <h2>Tổng số bàn chơi: {matchSet}</h2>
+                <button type='button' className='btn btn-success' onClick={() => {
+                    playGame();
+                    resetGame();
+                }}>Play</button>
             </div >
         );
     }
 }
-const mapDispatchToProps = (action) => {
-
+const mapStateToProps = (state) => {
+    return {
+        dice: state.dice.dice,
+        choice: state.dice.choice,
+        matchSet: state.dice.matchSet,
+        winSet: state.dice.winSet
+    }
 }
-export default connect(null, mapDispatchToProps)(DiceHome)
+const mapDispatchToProps = (dispatch) => {
+    return {
+        playGame: () => {
+            const action = { type: "PLAY_GAME" };
+            dispatch(action);
+        },
+        typeChoice: (choice) => {
+            const action = { type: "CHOICE_GAME", choice: choice };
+            dispatch(action);
+        },
+        resetGame: () => {
+            const action = { type: "RESET_GAME" };
+            dispatch(action);
+        }
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(DiceHome)
